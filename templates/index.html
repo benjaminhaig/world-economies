@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{% block body%}
+<h1 class="text-8xl bg-slate-950 mb-8 text-center" id="typewriter">World Economies 🌎</h1>
+
+<div class="flex flex-row justify-center gap-2">
+    <a href="#"
+        class="flex flex-col justify-center items-center text-xl w-48 h-48 border rounded gap-2 bg-blue-500 transition-all duration-300"
+        id="over-rank-btn">
+        <span>Overall Rankings</span>
+        <i class="fa-solid fa-square-poll-vertical text-4xl"></i>
+    </a>
+    <a href="#"
+        class="flex flex-col justify-center items-center text-xl w-48 h-48 border rounded gap-2 transition-all duration-300"
+        id="gdp-rank-btn">
+        <span>Highest GDP</span>
+        <i class="fa-solid fa-city text-4xl"></i>
+    </a>
+    <a href="#"
+        class="flex flex-col justify-center items-center text-xl w-48 h-48 border rounded gap-2 transition-all duration-300"
+        id="inflation-rank-btn">
+        <span>Lowest Inflation</span>
+        <i class="fa-solid fa-money-bill-trend-up text-4xl"></i>
+    </a>
+</div>
+<hr class="my-4" />
+<div class="text-white text-xl">
+    <!-- Overall Ranking -->
+    <div id="overall-rank">
+        Overall Rank
+    </div>
+    <!-- GDP Highest Ranking -->
+    <div id="gdp-rank" class="hidden flex flex-row gap-4 flex-wrap justify-center">
+        {% for gdp in gdp_query if gdp.gdp_current_usd is not none %}
+        <a href="/country/{{gdp.country_code}}"
+            class="flex flex-col hover:scale-110 duration-300 transition-all hover:cursor-pointer group"
+            id="{{gdp.country_code}}">
+            <div class="relative">
+                <p
+                    class="absolute top-4 left-4 text-xl w-12 h-12 bg-black rounded-full flex flex-row justify-center items-center">
+                    #{{ loop.index }}</p>
+                <img src="https://flagcdn.com/224x168/{{ gdp.country_code | convert_alpha3_to_alpha2 | lower }}.png"
+                    alt="{{ gdp.country_code }} flag" class="flag" />
+                <p
+                    class="text-sm text-center bg-black p-2 rounded-full group-hover:block hidden absolute bottom-1/3 left-1/2 transform -translate-x-1/2">
+
+                    {{ country_codes.get(gdp.country_code, "Unknown Country") }}</p>
+                <p class="absolute bottom-4 left-1/2 text-sm transform -translate-x-1/2 p-2 bg-black rounded-full">
+                    ${{gdp.gdp_current_usd |
+                    round_even_format}}</p>
+            </div>
+        </a>
+
+
+        {% endfor %}
+    </div>
+    <div id="inflation-rank" class="hidden flex flex-row gap-4 flex-wrap justify-center">
+        {% for inflation in inflation_query if inflation.inflation_avg_consumer_prices is not none %}
+        <a href="/country/{{inflation.country_code}}"
+            class="flex flex-col hover:scale-110 duration-300 transition-all hover:cursor-pointer group"
+            id="{{inflation.country_code}}">
+            <div class="relative">
+                <p
+                    class="absolute top-4 left-4 text-xl w-12 h-12 bg-black rounded-full flex flex-row justify-center items-center">
+                    #{{ loop.index }}</p>
+                <img src="https://flagcdn.com/224x168/{{ inflation.country_code | convert_alpha3_to_alpha2 | lower }}.png"
+                    alt="{{ inflation.country_code }} flag" class="flag" />
+                <p
+                    class="text-sm text-center bg-black p-2 rounded-full absolute group-hover:block hidden absolute bottom-1/3 left-1/2 transform -translate-x-1/2">
+                    {{ country_codes.get(inflation.country_code, "Unknown Country") }}</p>
+                <p class="absolute bottom-4 left-1/2 text-sm transform -translate-x-1/2 p-2 bg-black rounded-full">
+                    {{inflation.inflation_avg_consumer_prices}}%</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+
+</div>
+<script src="{{ url_for('static', filename='scripts/homeRank.js') }}"></script>
+{% endblock %}

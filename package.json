@@ -1,0 +1,16 @@
+{
+  "name": "world-economies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss build static/css/tailwind.css -o static/css/output.css",
+    "tailwind:watch": "npx tailwindcss -i static/css/tailwind.css -o static/css/output.css --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.10"
+  }
+}

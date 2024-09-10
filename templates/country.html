@@ -1,0 +1,254 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<title>{{ country_name }}&apos;s Economics</title>
+{% endblock %}
+
+{% block body%}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<h1 class="text-8xl" id="typewriter">{{ country_name }}</h1>
+<a class="my-2 hover:text-blue-500 transition-all duration-300"
+    href="https://www.google.com/maps?q={{ wb_data | map(attribute='latitude') | list | last }},{{ wb_data | map(attribute='longitude') | list | last }}"
+    target="_blank">
+    📍{{ wb_data | map(attribute='capital_city') | list | last }} ({{ wb_data | map(attribute='latitude') | list | last
+    }}, {{ wb_data | map(attribute='longitude') | list | last }})
+</a>
+<p>🧑‍🤝‍🧑 {{imf_data | map(attribute='population_total') | list | last | round_even_format}}</p>
+
+<!-- GDP Metrics -->
+<div class="border p-8 shadow-xl rounded mt-4">
+    <div class="flex flex-col gap-4 justify-start items-center mb-4">
+        <p class="text-8xl text-green-500"><i class="fa-solid fa-city"></i></p>
+        <h3 class="text-3xl text-green-500">Gross Domestic Product (GDP)</h3>
+        <p class="max-w-prose text-center text-sm">GDP is the total value of goods and services produced
+            in a country
+            over a specific period. It reflects economic health, guiding policy and investment decisions. All GDP
+            statistics
+            from <a href="https://www.worldbank.org/en/home" class="text-green-500">World Bank</a>.</p>
+    </div>
+
+    <hr class="mb-4" />
+    <!-- GDP Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
+        <!-- Current GDP in USD -->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gdp_current_usd') | list | last |
+                round_even_format}}</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_rank[0]
+                    }}</span>/{{gdp_ranks.gdp_rank[1]}}
+            </p>
+            <p class="mb-2">{{gdp_ranks.gdp_rank[2]}}</p>
+            <canvas id="GDPChart"></canvas>
+        </div>
+        <!-- GDP Per Capita -->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gdp_per_capita_current_usd') | list | last |
+                round_even_format}}</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_per_capita_rank[0]
+                    }}</span>/{{gdp_ranks.gdp_per_capita_rank[1]}}
+            </p>
+            <p class="mb-2">{{gdp_ranks.gdp_per_capita_rank[2]}}</p>
+            <canvas id="GDPPerCapitaChart"></canvas>
+        </div>
+        <!-- GDP Annual Growth -->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">{{ wb_data | map(attribute='gdp_growth_annual_percent') | list | last |
+                round(2)
+                }}%</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_annual_growth_rank[0]
+                    }}</span>/{{gdp_ranks.gdp_annual_growth_rank[1]}}
+            </p>
+            <p class="mb-2">{{gdp_ranks.gdp_annual_growth_rank[2]}}</p>
+            <canvas id="GDPAnnualGrowth"></canvas>
+        </div>
+
+    </div>
+</div>
+
+<!-- GNI Metrics -->
+<div class="border p-8 shadow-xl rounded mt-4">
+    <div class="flex flex-col gap-4 justify-start items-center mb-4">
+        <p class="text-8xl text-cyan-500"><i class="fa-solid fa-sack-dollar"></i></p>
+        <h3 class="text-3xl text-cyan-500">Gross National Income (GNI)</h3>
+        <p class="max-w-prose text-center text-sm">GNI is the total income earned by a
+            country&apos;s
+            residents, including income from abroad. It is important because it provides a broader view of a
+            country&apos;s
+            economic health and citizens&apos; overall wealth than GDP alone. All GNI statistics from <a
+                class="text-cyan-500" href="https://www.worldbank.org/en/home">World Bank</a>.</p>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 place-items-center">
+        <!-- GNI Current USD -->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gni_current_usd') | list | last |
+                round_even_format}}</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gni_ranks.gni_rank[0]
+                    }}</span>/{{gni_ranks.gni_rank[1]}}
+            </p>
+            <p class="mb-2">{{gni_ranks.gni_rank[2]}}</p>
+            <canvas id="GNIChart"></canvas>
+        </div>
+        <!-- GNI Per Capita -->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gni_per_capita_current_usd') | list | last
+                | round_even_format}}</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gni_ranks.gni_per_capita_rank[0]
+                    }}</span>/{{gni_ranks.gni_per_capita_rank[1]}}
+            </p>
+            <p class="mb-2">{{gni_ranks.gni_per_capita_rank[2]}}</p>
+            <canvas id="GNIPerCapita"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Inflation Metrics -->
+<div class="border p-8 shadow-xl rounded mt-4">
+    <div class="flex flex-col gap-4 justify-start items-center mb-4">
+        <p class="text-8xl text-red-500"><i class="fa-solid fa-money-bill-trend-up"></i></p>
+        <h3 class="text-3xl text-red-500">Inflation</h3>
+        <p class="max-w-prose text-center text-sm">Inflation is the rise in prices over time, decreasing the value of
+            money. It matters because it affects the cost of living and economic stability. All statistics from the <a
+                href="https://www.imf.org/en/Home" class="text-red-500">International Monetary Fund</a> & <a
+                class="text-red-500" href="https://www.worldbank.org/en/home">World Bank</a>.</p>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
+        <!-- Inflation, Average Consumer Prices over Period -->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_avg_consumer_prices') | list | last |
+                round(1)
+                }}%</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ inflation_ranks.inflation_avg_rank[0]
+                    }}</span>/{{inflation_ranks.inflation_avg_rank[1]}}
+            </p>
+            <p class="mb-2">{{inflation_ranks.inflation_avg_rank[2]}}</p>
+            <canvas id="InflationAverage"></canvas>
+        </div>
+        <!-- Inflation, End of period prices-->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_end_consumer_prices') | list | last
+                | round(1)}}%</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ inflation_ranks.inflation_end_rank[0]
+                    }}</span>/{{inflation_ranks.inflation_end_rank[1]}}
+            </p>
+            <p class="mb-2">{{inflation_ranks.inflation_end_rank[2]}}</p>
+            <canvas id="InflationEnd"></canvas>
+        </div>
+        <!-- Inflation, GDP Deflator -->
+        <div class="w-96 flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">{{ wb_data | map(attribute='inflation_gdp_deflator_annual_percent') | list |
+                last |
+                round(1)
+                }}%</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_annual_growth_rank[0]
+                    }}</span>/{{gdp_ranks.gdp_annual_growth_rank[1]}}
+            </p>
+            <p class="mb-2">{{gdp_ranks.gdp_annual_growth_rank[2]}}</p>
+            <canvas id="InflationGDPDeflator"></canvas>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function createChart(chartId, labels, data, label, color) {
+        const ctx = document.getElementById(chartId);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    backgroundColor: color,
+                    label: label,
+                    data: data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // GDP Charts
+    createChart(
+        'GDPChart',
+        {{ wb_data | map(attribute = 'year') | list }},
+        {{ wb_data | map(attribute = 'gdp_current_usd') | list }},
+        'Gross Domestic Product (USD)',
+        '#22c55e'
+    );
+
+    createChart(
+        'GDPPerCapitaChart',
+        {{ wb_data | map(attribute = 'year') | list }},
+        {{ wb_data | map(attribute = 'gdp_per_capita_current_usd') | list }},
+        'GDP Per Capita (USD)',
+        '#22c55e'
+    );
+
+    createChart(
+        'GDPAnnualGrowth',
+        {{ wb_data | map(attribute = 'year') | list }},
+        {{ wb_data | map(attribute = 'gdp_growth_annual_percent') | list }},
+        'GDP Annual Growth (%)',
+        '#22c55e'
+    );
+
+    // Inflation charts
+    createChart(
+        'InflationAverage',
+        {{ imf_data | map(attribute = 'year') | list }},
+        {{ imf_data | map(attribute = 'inflation_avg_consumer_prices') | list }},
+        'Inflation - Average Annual Increase in CPI (%)',
+        '#ef4444'
+    );
+
+    createChart(
+        'InflationEnd',
+        {{ imf_data | map(attribute = 'year') | list }},
+        {{ imf_data | map(attribute = 'inflation_end_consumer_prices') | list }},
+        'Inflation - End of Year Increase in CPI (%)',
+        '#ef4444'
+    );
+
+    createChart(
+        'InflationGDPDeflator',
+        {{ wb_data | map(attribute = 'year') | list }},
+        {{ wb_data | map(attribute = 'inflation_gdp_deflator_annual_percent') | list }},
+        'Inflation - GDP Deflator (%)',
+        '#ef4444'
+    );
+
+    //GNI Charts
+    createChart(
+        'GNIChart',
+        {{ wb_data | map(attribute = 'year') | list }},
+        {{ wb_data | map(attribute = 'gni_current_usd') | list }},
+        'Gross National Income (USD)',
+        '#06b6d4'
+    );
+
+    createChart(
+        'GNIPerCapita',
+        {{ wb_data | map(attribute = 'year') | list }},
+        {{ wb_data | map(attribute = 'gni_per_capita_current_usd') | list }},
+        'GNI Per Captia (USD)',
+        '#06b6d4'
+    );
+
+
+</script>
+
+{% endblock %}
