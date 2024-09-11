@@ -26,7 +26,14 @@ def all_rankings(country_code):
     }
 
     # Inflation Ranks
-    inflation_average_query = IMFData.query.filter_by(year=current_year).order_by(IMFData.inflation_avg_consumer_prices.desc()).all()
+    # inflation_average_query = IMFData.query.filter_by(year=current_year).order_by(IMFData.inflation_avg_consumer_prices.desc()).all()
+    inflation_average_query = (IMFData.query
+    .filter_by(year=current_year)
+    .order_by(
+        IMFData.inflation_avg_consumer_prices.desc(),
+        IMFData.country_code.desc()
+    )
+    .all()) 
     inflation_average_rank = get_rankings(inflation_average_query, country_code, inverse=True)
 
     inflation_end_query = IMFData.query.filter_by(year=current_year).order_by(IMFData.inflation_end_consumer_prices.desc()).all()

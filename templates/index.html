@@ -1,22 +1,27 @@
 {% extends 'layout.html' %}
-{% block body%}
-<h1 class="text-8xl bg-slate-950 mb-8 text-center" id="typewriter">World Economies 🌎</h1>
+
+{% block head %}
+<title>{{ country_name }}World Economies - Learn how your economy is really doing!</title>
+<meta name="description"
+    content="Economics is objective. Don't let politicians or your distant aunt tell you the economy is amazing or horrible."
+    {% endblock %} {% block body%} <h1 class="text-5xl md:text-8xl bg-slate-950 mb-8 text-center" id="typewriter">World
+Economies 🌎</h1>
 
 <div class="flex flex-row justify-center gap-2">
     <a href="#"
-        class="flex flex-col justify-center items-center text-xl w-48 h-48 border rounded gap-2 bg-blue-500 transition-all duration-300"
+        class="flex flex-col justify-center items-center text-base md:text-xl w-36 h-36 md:w-48 md:h-48 border rounded gap-2 bg-blue-500 transition-all duration-300"
         id="over-rank-btn">
         <span>Overall Rankings</span>
         <i class="fa-solid fa-square-poll-vertical text-4xl"></i>
     </a>
     <a href="#"
-        class="flex flex-col justify-center items-center text-xl w-48 h-48 border rounded gap-2 transition-all duration-300"
+        class="flex flex-col justify-center items-center text-base md:text-xl w-36 h-36 md:w-48 md:h-48 border rounded gap-2 transition-all duration-300"
         id="gdp-rank-btn">
         <span>Highest GDP</span>
         <i class="fa-solid fa-city text-4xl"></i>
     </a>
     <a href="#"
-        class="flex flex-col justify-center items-center text-xl w-48 h-48 border rounded gap-2 transition-all duration-300"
+        class="flex flex-col justify-center items-center text-base md:text-xl w-36 h-36 md:w-48 md:h-48 border rounded gap-2 transition-all duration-300"
         id="inflation-rank-btn">
         <span>Lowest Inflation</span>
         <i class="fa-solid fa-money-bill-trend-up text-4xl"></i>
@@ -26,7 +31,7 @@
 <div class="text-white text-xl">
     <!-- Overall Ranking -->
     <div id="overall-rank">
-        Overall Rank
+        Overall Rank - COMING SOON!
     </div>
     <!-- GDP Highest Ranking -->
     <div id="gdp-rank" class="hidden flex flex-row gap-4 flex-wrap justify-center">

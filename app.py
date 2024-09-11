@@ -26,7 +26,13 @@ def check_maintenance_mode(func):
 @check_maintenance_mode
 def index():
     gdp_query = database.models.EconomicData.query.filter_by(year=CURRENT_YEAR).order_by(database.models.EconomicData.gdp_current_usd.desc()).all()
-    inflation_query = database.models.IMFData.query.filter_by(year=CURRENT_YEAR).order_by(database.models.IMFData.inflation_avg_consumer_prices.asc()).all()
+    inflation_query = (database.models.IMFData.query
+    .filter_by(year=CURRENT_YEAR)
+    .order_by(
+        database.models.IMFData.inflation_avg_consumer_prices.asc(),
+        database.models.IMFData.country_code.asc()
+    )
+    .all()) 
 
     country_codes = COUNTRY_CODES
     if (GLOBAL_TESTING):
@@ -51,7 +57,7 @@ def country(country_code):
     ranks = all_rankings(country_code)
 
     # Render the template with the required data
-    return render_template('country.html', country_name=c, wb_data=wb_data, imf_data=imf_data, gdp_ranks=ranks.get('gdp_ranks'), inflation_ranks=ranks.get('inflation_ranks'), gni_ranks=ranks.get('gni_ranks'))
+    return render_template('country.html', country_code=country_code, country_name=c, wb_data=wb_data, imf_data=imf_data, gdp_ranks=ranks.get('gdp_ranks'), inflation_ranks=ranks.get('inflation_ranks'), gni_ranks=ranks.get('gni_ranks'))
 
 # Template Functions:
 @app.template_filter('round_even')
@@ -66,6 +72,18 @@ def round_even_format(value):
 def convert_alpha3_to_alpha2(value):
     country = pycountry.countries.get(alpha_3=value)
     return country.alpha_2 if country else None
+
+@app.template_filter('most_recent_non_null_with_year')
+def most_recent_non_null_with_year(data, attribute):
+    for item in reversed(data):
+        value = getattr(item, attribute, None)
+        if value is not None:
+            return (value, getattr(item, 'year', 'Unknown'))
+    return (None, 'Unknown') 
+
+@app.context_processor
+def inject_country_codes():
+    return dict(country_codes=COUNTRY_CODES, version="Beta 0.0.1")
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

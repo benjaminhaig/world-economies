@@ -20,7 +20,9 @@ class WorldBankEconomicsAPI:
             "GC.REV.XGRT.GD.ZS": "Revenue (excluding grants, % of GDP)",
             "GC.XPN.TOTL.GD.ZS": "Government Expenditure (% of GDP)",
             "SI.POV.GINI": 'Gini Index (0-100)',
-            "SL.UEM.TOTL.ZS": 'Unemployment (% of labor force)'
+            "SL.UEM.TOTL.ZS": 'Unemployment (% of labor force)',
+            "SI.DST.FRST.10": 'Income share held by lowest 10%',
+            "SI.DST.10TH.10": 'Income share held by highest 10%'
         }
 
     def get_country_metadata(self, country_code):

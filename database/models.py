@@ -24,6 +24,8 @@ class EconomicData(db.Model):
     government_expenditure_gdp_percent = db.Column(db.Float)  # Government Expenditure (% of GDP)
     gini_index=db.Column(db.Float) # Gini Index (0-100)
     unemployment=db.Column(db.Float) # Unemployment (% of labor force)
+    lowest_ten_percent=db.Column(db.Float) # Income share held by lowest 10%
+    highest_ten_percent=db.Column(db.Float) # Income share held by highest 10%
 
 
 

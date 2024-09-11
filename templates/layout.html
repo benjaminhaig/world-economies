@@ -32,15 +32,95 @@
                     Compare economies
                     <i class="fa-solid fa-arrow-right animate-pulse group-hover:ml-2 transition-all duration-200"></i>
                 </a>
+
+                <!-- Search Bar Below Compare Economies Button -->
+                <div class="relative mt-4">
+                    <input type="text" id="search-bar" placeholder="Search for a country..."
+                        class="w-full px-4 py-2 border border-slate-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 bg-slate-950 text-slate-100">
+                    <div id="suggestions" class="absolute left-0 right-0 bg-slate-100 shadow-lg rounded-md mt-1 hidden">
+                        <!-- Suggestions will be dynamically populated here -->
+                    </div>
+                </div>
             </div>
 
         </nav>
     </header>
-    <div class="p-4">
+    <main class="p-4">
         <hr class="mb-4" />
         {% block body %}
         {% endblock %}
-    </div>
+    </main>
+    <footer
+        class="grid grid-cols-1 md:grid-cols-3 mx-auto p-4 place-items-center border mx-4 my-4 rounded gap-4 text-center md:text-start">
+        <div class="flex flex-col justify-start items-center">
+            <img src="{{ url_for('static', filename='images/world-economies-logo.webp')}}" width="100" height="100"
+                class="mb-4" />
+            <p class="font-handjet text-2xl text-slate-300">World Economies - Copyright ©2024</p>
+            <p class="text-sm text-slate-300">{{version}}</p>
+        </div>
+        <div class="flex flex-col justify-start gap-2">
+            <a class="text-slate-300 hover:text-slate-100" href="/metrics">What
+                do the
+                metrics mean? <i class="fa-solid fa-arrow-right"></i></a>
+            <a class="text-slate-300 hover:text-slate-100" href="/countries">What
+                countries are covered? <i class="fa-solid fa-arrow-right"></i></a>
+            <a class="text-slate-300 hover:text-slate-100" href="/philosophy">What is
+                the philosophy of World Economies? <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="flex flex-col justify-start gap-2 text-slate-300">
+            <p class="text-slate-300"><i class="fa-solid fa-code"></i> World Economies is built & maintained by your
+                friends at <a class="text-blue-500" href="https://fabled-web.ca">Fabled Web
+                    Solutions</a></p>
+            <p class="text-slate-300"><i class="fa-solid fa-database"></i> All data from the <a class="text-blue-500"
+                    href="https://www.imf.org/external/datamapper/api/help">International Monetary Fund</a> and <a
+                    href="https://documents.worldbank.org/en/publication/documents-reports/api"
+                    class="text-blue-500">World
+                    Bank</a> API&apos;s. Rankings are calculated linearly based on each metric.</p>
+            <p class="text-slate-300"><i class="fa-solid fa-flag"></i> Huge thanks to <a class="text-blue-500"
+                    href="https://flagcdn.com/">FlagCDN</a>
+                for supplying us with
+                easily available flag image
+                assets!</p>
+
+        </div>
+    </footer>
+
+    <script>
+        // Searching script
+        const COUNTRY_CODES = {{ country_codes | tojson }};
+
+        const searchBar = document.getElementById('search-bar');
+        const suggestions = document.getElementById('suggestions');
+
+        searchBar.addEventListener('input', function () {
+            const input = searchBar.value.toLowerCase();
+            suggestions.innerHTML = ''; // Clear suggestions
+            suggestions.classList.add('hidden'); // Hide suggestions by default
+
+            if (input) {
+                const filteredCountries = Object.entries(COUNTRY_CODES).filter(([code, name]) => {
+                    return name.toLowerCase().startsWith(input);
+                });
+
+                filteredCountries.forEach(([code, name]) => {
+                    const li = document.createElement('li');
+                    li.textContent = name;
+                    li.classList.add('p-2', 'hover:bg-gray-100', 'cursor-pointer');
+                    li.addEventListener('click', function () {
+                        searchBar.value = name;
+                        suggestions.innerHTML = '';
+                        suggestions.classList.add('hidden');
+                        window.location.href = `/country/${code}`;
+                    });
+                    suggestions.appendChild(li);
+                });
+
+                suggestions.classList.remove('hidden'); // Show suggestions if there are results
+            }
+        });
+
+    </script>
+
     <script src="{{ url_for('static', filename='scripts/typewriter-text.js') }}"></script>
 </body>
 

@@ -56,7 +56,9 @@ def save_economic_data_for_country(country_code):
                 revenue_gdp_percent=row.get('Revenue (excluding grants, % of GDP)'),
                 government_expenditure_gdp_percent=row.get('Government Expenditure (% of GDP)'),
                 gini_index=row.get('Gini Index (0-100)'),
-                unemployment=row.get('Unemployment (% of labor force)')
+                unemployment=row.get('Unemployment (% of labor force)'),
+                lowest_ten_percent=row.get('Income share held by lowest 10%'),
+                highest_ten_percent=row.get('Income share held by highest 10%')
             )
             db.session.add(economic_record)
 

@@ -2,16 +2,23 @@
 
 {% block head %}
 <title>{{ country_name }}&apos;s Economics</title>
+<meta name="description" content="{{country_name}}'s current economy and how it ranks worldwide!" />
 {% endblock %}
 
-{% block body%}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block body %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js">
+</script>
 
-<h1 class="text-8xl" id="typewriter">{{ country_name }}</h1>
+<div class="flex flex-row justify-start gap-4">
+    <h1 class="text-6xl md:text-8xl" id="typewriter">{{ country_name }}</h1>
+    <img src="https://flagcdn.com/96x72/{{ country_code | convert_alpha3_to_alpha2 | lower }}.png"
+        alt="{{ country_name }} flag" class="flag" />
+</div>
 <a class="my-2 hover:text-blue-500 transition-all duration-300"
     href="https://www.google.com/maps?q={{ wb_data | map(attribute='latitude') | list | last }},{{ wb_data | map(attribute='longitude') | list | last }}"
     target="_blank">
-    📍{{ wb_data | map(attribute='capital_city') | list | last }} ({{ wb_data | map(attribute='latitude') | list | last
+    📍{{ wb_data | map(attribute='capital_city') | list | last }} ({{ wb_data | map(attribute='latitude') | list
+    | last
     }}, {{ wb_data | map(attribute='longitude') | list | last }})
 </a>
 <p>🧑‍🤝‍🧑 {{imf_data | map(attribute='population_total') | list | last | round_even_format}}</p>
@@ -43,7 +50,8 @@
         </div>
         <!-- GDP Per Capita -->
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gdp_per_capita_current_usd') | list | last |
+            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gdp_per_capita_current_usd') | list | last
+                |
                 round_even_format}}</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_per_capita_rank[0]
                     }}</span>/{{gdp_ranks.gdp_per_capita_rank[1]}}
@@ -110,10 +118,12 @@
     <div class="flex flex-col gap-4 justify-start items-center mb-4">
         <p class="text-8xl text-red-500"><i class="fa-solid fa-money-bill-trend-up"></i></p>
         <h3 class="text-3xl text-red-500">Inflation</h3>
-        <p class="max-w-prose text-center text-sm">Inflation is the rise in prices over time, decreasing the value of
-            money. It matters because it affects the cost of living and economic stability. All statistics from the <a
-                href="https://www.imf.org/en/Home" class="text-red-500">International Monetary Fund</a> & <a
-                class="text-red-500" href="https://www.worldbank.org/en/home">World Bank</a>.</p>
+        <p class="max-w-prose text-center text-sm">Inflation is the rise in prices over time, decreasing the value
+            of
+            money. It matters because it affects the cost of living and economic stability. All statistics from the
+            <a href="https://www.imf.org/en/Home" class="text-red-500">International Monetary Fund</a> & <a
+                class="text-red-500" href="https://www.worldbank.org/en/home">World Bank</a>.
+        </p>
     </div>
 
     <hr class="mb-4" />
@@ -121,7 +131,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
         <!-- Inflation, Average Consumer Prices over Period -->
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_avg_consumer_prices') | list | last |
+            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_avg_consumer_prices') | list |
+                last |
                 round(1)
                 }}%</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ inflation_ranks.inflation_avg_rank[0]
@@ -132,7 +143,8 @@
         </div>
         <!-- Inflation, End of period prices-->
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_end_consumer_prices') | list | last
+            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_end_consumer_prices') | list |
+                last
                 | round(1)}}%</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ inflation_ranks.inflation_end_rank[0]
                     }}</span>/{{inflation_ranks.inflation_end_rank[1]}}
@@ -142,7 +154,8 @@
         </div>
         <!-- Inflation, GDP Deflator -->
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">{{ wb_data | map(attribute='inflation_gdp_deflator_annual_percent') | list |
+            <p class="text-2xl font-medium">{{ wb_data | map(attribute='inflation_gdp_deflator_annual_percent') |
+                list |
                 last |
                 round(1)
                 }}%</p>
@@ -156,7 +169,106 @@
     </div>
 </div>
 
+<!-- Equality Metrics -->
+{% set gini_data = wb_data | most_recent_non_null_with_year('gini_index') %}
+{% set lowest_data = wb_data | most_recent_non_null_with_year('lowest_ten_percent') %}
+{% set highest_data = wb_data | most_recent_non_null_with_year('highest_ten_percent') %}
+
+<div class="border p-8 shadow-xl rounded mt-4">
+
+    <div class="flex flex-col gap-4 justify-start items-center mb-4">
+        <p class="text-8xl text-violet-500"><i class="fa-solid fa-chart-pie"></i></p>
+        <h3 class="text-3xl text-violet-500">Equality Metrics</h3>
+        <p class="max-w-prose text-center text-sm">Inflation is the rise in prices over time, decreasing the value
+            of
+            money. It matters because it affects the cost of living and economic stability. All statistics from the
+            <a class="text-violet-500" href="https://www.worldbank.org/en/home">World Bank</a>. We do not do rank these
+            metrics, as they are reported much less frequently, what is unfair for developing nations.
+        </p>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
+
+        <!-- Gini Coefficient -->
+        <div class="flex flex-col justify-start items-center gap-2">
+            <p class="text-2xl font-medium">Gini Coefficient</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">The Gini coefficient measures income inequality on
+                a scale from
+                0% (perfect
+                equality) to 100% (maximum
+                inequality).</p>
+            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
+                data-percent="{{ gini_data[0] }}">
+                <!-- Background Circle -->
+                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
+
+
+                <div class="absolute inset-0 rounded-full border-violet-500 border-4 filled-circle"
+                    style="transform: scaleX(-1);">
+                </div>
+
+                <!-- Centered Value (%) -->
+                <span class="text-xl font-semibold z-10 text-slate-100"></span>
+            </div>
+            <p class="text-slate-600 text-xs">({{gini_data[1]}})</p>
+        </div>
+
+        <!-- Lowest 10% -->
+        <div class="flex flex-col justify-start items-center gap-2">
+            <p class="text-2xl font-medium">Income Share of Poorest 10%</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">Shows the percentage of total income earned by the
+                poorest 10% of a country’s population, indicating income distribution among the most economically
+                disadvantaged.</p>
+            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
+                data-percent="{{ lowest_data[0] }}">
+                <!-- Background Circle -->
+                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
+
+
+                <div class="absolute inset-0 rounded-full border-violet-500 border-4 filled-circle"
+                    style="transform: scaleX(-1);">
+                </div>
+
+                <!-- Centered Value (%) -->
+                <span class="text-xl font-semibold z-10 text-slate-100"></span>
+            </div>
+            <p class="text-slate-600 text-xs">({{lowest_data[1]}})</p>
+        </div>
+
+        <!-- Highest 10%-->
+        <div class="flex flex-col justify-start items-center gap-2">
+            <p class="text-2xl font-medium">Income Share of Wealthiest 10%</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">Shows the percentage of total income earned by the
+                richest 10% of a country’s population, reflecting income distribution among the wealthiest.</p>
+            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
+                data-percent="{{ highest_data[0] }}">
+                <!-- Background Circle -->
+                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
+
+
+                <div class="absolute inset-0 rounded-full border-violet-500 border-4 filled-circle"
+                    style="transform: scaleX(-1);">
+                </div>
+
+                <!-- Centered Value (%) -->
+                <span class="text-xl font-semibold z-10 text-slate-100"></span>
+            </div>
+            <p class="text-slate-600 text-xs">({{highest_data[1]}})</p>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    document.querySelectorAll('[data-percent]').forEach(el => {
+        const percent = el.getAttribute('data-percent'); // Read the data attribute
+        const filledCircle = el.querySelector('.filled-circle');
+        filledCircle.style.background = `conic-gradient(#581c87 0% ${percent}%, transparent ${percent}% 100%)`;
+        el.querySelector('span').innerText = `${percent}%`; // Update percentage text
+    });
+
     function createChart(chartId, labels, data, label, color) {
         const ctx = document.getElementById(chartId);
 
