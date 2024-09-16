@@ -6,23 +6,27 @@ def get_rankings(query, country_code, inverse=False):
     argument -- Query from SQLAlchemy (list), Country code (string), inverse (boolean, default False)
     Return: tuple (ranking, total number of countries)
     """
-    ranking = ([index for index, item in enumerate(query) if item.country_code == country_code].pop() + 1)
-    total = len(query)
-    if (inverse):
-        ranking = total - ranking
-        ranking += 1
-    economy_emojis = ["🔥 Amazing!", "💪 Strong!", "😐 Average", "😬 Struggling", "😭 Weak"]
+    ranking_list = [index for index, item in enumerate(query) if item.country_code == country_code]
+    if (len(ranking_list)):
+        ranking = (ranking_list.pop() + 1)
+        total = len(query)
+        if (inverse):
+            ranking = total - ranking
+            ranking += 1
+        economy_emojis = ["🔥 Amazing!", "💪 Strong!", "😐 Average", "😬 Struggling", "😭 Weak"]
 
-    percent = (1 - (ranking/total)) * 100
-    emoji = None
- 
-    if percent >= 80: emoji = economy_emojis[0]
-    elif percent >= 60: emoji = economy_emojis[1]
-    elif percent >= 40: emoji = economy_emojis[2]
-    elif percent >= 20: emoji = economy_emojis[3]
-    else: emoji = economy_emojis[-1]
+        percent = (1 - (ranking/total)) * 100
+        emoji = None
+    
+        if percent >= 80: emoji = economy_emojis[0]
+        elif percent >= 60: emoji = economy_emojis[1]
+        elif percent >= 40: emoji = economy_emojis[2]
+        elif percent >= 20: emoji = economy_emojis[3]
+        else: emoji = economy_emojis[-1]
 
-    return (ranking, len(query), emoji)
+        return (ranking, len(query), emoji)
+    else:
+        return ('?', len(query), "❓ Unknown")
 
 
     

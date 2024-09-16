@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
+    <!-- Icon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
 
     <!-- FontAwesome Stuff -->
     <script src="https://kit.fontawesome.com/036913ea2b.js" crossorigin="anonymous"></script>
@@ -16,7 +18,11 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Handjet:wght@100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     {% block head %}
     {% endblock %}
 </head>
@@ -27,8 +33,8 @@
             <div class="flex flex-col justify-start items-center">
                 <img width="100" height="100"
                     src="{{ url_for('static', filename='images/world-economies-logo.webp')}}" />
-                <p class="font-handjet text-2xl">Is my economy 🔥 or 💩???</p>
-                <a href="/" class="font-handjet flex flex-row justify-start items-center gap-1 group">
+                <p class="text-2xl">Is my economy 🔥 or 💩???</p>
+                <a href="/" class="flex flex-row justify-start items-center gap-1 group">
                     Compare economies
                     <i class="fa-solid fa-arrow-right animate-pulse group-hover:ml-2 transition-all duration-200"></i>
                 </a>
@@ -51,21 +57,21 @@
         {% endblock %}
     </main>
     <footer
-        class="grid grid-cols-1 md:grid-cols-3 mx-auto p-4 place-items-center border mx-4 my-4 rounded gap-4 text-center md:text-start">
+        class="grid grid-cols-1 md:grid-cols-3 mx-auto p-4 place-items-center border ml-4 mr-4 mb-4 rounded gap-4 text-center md:text-start">
         <div class="flex flex-col justify-start items-center">
             <img src="{{ url_for('static', filename='images/world-economies-logo.webp')}}" width="100" height="100"
                 class="mb-4" />
-            <p class="font-handjet text-2xl text-slate-300">World Economies - Copyright ©2024</p>
+            <p class="text-2xl text-slate-300">World Economies - Copyright ©2024</p>
             <p class="text-sm text-slate-300">{{version}}</p>
         </div>
         <div class="flex flex-col justify-start gap-2">
-            <a class="text-slate-300 hover:text-slate-100" href="/metrics">What
-                do the
-                metrics mean? <i class="fa-solid fa-arrow-right"></i></a>
+            <a class="text-slate-300 hover:text-slate-100" href="/indicators">What
+                does each indicator
+                mean? <i class="fa-solid fa-arrow-right"></i></a>
             <a class="text-slate-300 hover:text-slate-100" href="/countries">What
                 countries are covered? <i class="fa-solid fa-arrow-right"></i></a>
-            <a class="text-slate-300 hover:text-slate-100" href="/philosophy">What is
-                the philosophy of World Economies? <i class="fa-solid fa-arrow-right"></i></a>
+            <a class="text-slate-300 hover:text-slate-100" href="mailto:ben@fabled-web.com">Get in touch with us by
+                email <i class="fa-solid fa-arrow-right"></i></a>
         </div>
         <div class="flex flex-col justify-start gap-2 text-slate-300">
             <p class="text-slate-300"><i class="fa-solid fa-code"></i> World Economies is built & maintained by your
@@ -76,6 +82,8 @@
                     href="https://documents.worldbank.org/en/publication/documents-reports/api"
                     class="text-blue-500">World
                     Bank</a> API&apos;s. Rankings are calculated linearly based on each metric.</p>
+            <p class="text-slate-300"><i class="fa-solid fa-triangle-exclamation"></i> A value of 0 in any chart could
+                represent a value nonexistent value for that year.</p>
             <p class="text-slate-300"><i class="fa-solid fa-flag"></i> Huge thanks to <a class="text-blue-500"
                     href="https://flagcdn.com/">FlagCDN</a>
                 for supplying us with
@@ -92,6 +100,8 @@
         const searchBar = document.getElementById('search-bar');
         const suggestions = document.getElementById('suggestions');
 
+        let activeIndex = -1; // To track the active suggestion item
+
         searchBar.addEventListener('input', function () {
             const input = searchBar.value.toLowerCase();
             suggestions.innerHTML = ''; // Clear suggestions
@@ -102,10 +112,10 @@
                     return name.toLowerCase().startsWith(input);
                 });
 
-                filteredCountries.forEach(([code, name]) => {
+                filteredCountries.forEach(([code, name], index) => {
                     const li = document.createElement('li');
                     li.textContent = name;
-                    li.classList.add('p-2', 'hover:bg-gray-100', 'cursor-pointer');
+                    li.classList.add('p-2', 'hover:bg-gray-200', 'cursor-pointer', 'suggestion-item', 'rounded-lg');
                     li.addEventListener('click', function () {
                         searchBar.value = name;
                         suggestions.innerHTML = '';
@@ -116,6 +126,48 @@
                 });
 
                 suggestions.classList.remove('hidden'); // Show suggestions if there are results
+                activeIndex = -1; // Reset active index when the suggestions are updated
+            }
+        });
+
+        // Handle keyboard navigation
+        searchBar.addEventListener('keydown', function (e) {
+            const items = suggestions.querySelectorAll('.suggestion-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault(); // Prevent cursor from moving
+                activeIndex = (activeIndex + 1) % items.length;
+                updateActiveItem(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault(); // Prevent cursor from moving
+                activeIndex = (activeIndex - 1 + items.length) % items.length;
+                updateActiveItem(items);
+            } else if (e.key === 'Enter') {
+                if (activeIndex > -1 && items[activeIndex]) {
+                    items[activeIndex].click();
+                }
+            } else if (e.key === 'Escape') {
+                suggestions.classList.add('hidden');
+                activeIndex = -1;
+            }
+        });
+
+        // Update active item styling
+        function updateActiveItem(items) {
+            items.forEach((item, index) => {
+                item.classList.remove('bg-gray-200');
+                item.classList.remove('active'); // Remove active class from all items
+                if (index === activeIndex) {
+                    item.classList.add('bg-gray-200', 'active'); // Add active class to the current item
+                    item.scrollIntoView({ block: 'nearest' }); // Ensure the item is in view
+                }
+            });
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!searchBar.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.classList.add('hidden');
             }
         });
 

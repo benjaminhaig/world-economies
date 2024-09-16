@@ -1,6 +1,6 @@
-let rankingSelection = 'over-rank-btn';
-const rankingOptions = ['over-rank-btn', 'gdp-rank-btn', 'inflation-rank-btn'];
-const rankingDivs = ['overall-rank', 'gdp-rank', 'inflation-rank']
+let rankingSelection = 'gdp-rank-btn';
+const rankingOptions = ['gdp-rank-btn', 'inflation-rank-btn', 'equality-rank-btn'];
+const rankingDivs = ['gdp-rank', 'inflation-rank', 'equality-rank']
 
 // Iterate through each button ID
 for (const id of rankingOptions) {
@@ -25,8 +25,8 @@ for (const id of rankingOptions) {
         button.classList.add('bg-blue-500');
 
         // Show desired box for ranking
-        if (rankingSelection === 'over-rank-btn') document.getElementById('overall-rank').classList.remove('hidden')
-        else if (rankingSelection === 'gdp-rank-btn') document.getElementById('gdp-rank').classList.remove('hidden')
+        if (rankingSelection === 'gdp-rank-btn') document.getElementById('gdp-rank').classList.remove('hidden')
+        else if (rankingSelection === 'equality-rank-btn') document.getElementById('equality-rank').classList.remove('hidden')
         else if (rankingSelection === 'inflation-rank-btn') document.getElementById('inflation-rank').classList.remove('hidden')
 
 

@@ -39,35 +39,37 @@
     <!-- GDP Charts -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
         <!-- Current GDP in USD -->
+        {% set gdp_current_data = wb_data | most_recent_non_null_with_year('gdp_current_usd') %}
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gdp_current_usd') | list | last |
+            <p class="text-2xl font-medium">${{ gdp_current_data[0] |
                 round_even_format}}</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_rank[0]
                     }}</span>/{{gdp_ranks.gdp_rank[1]}}
             </p>
-            <p class="mb-2">{{gdp_ranks.gdp_rank[2]}}</p>
+            <p class="mb-1">{{gdp_ranks.gdp_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{gdp_current_data[1]}})</p>
             <canvas id="GDPChart"></canvas>
         </div>
         <!-- GDP Per Capita -->
+        {% set gdp_capita_data = wb_data | most_recent_non_null_with_year('gdp_per_capita_current_usd') %}
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gdp_per_capita_current_usd') | list | last
-                |
-                round_even_format}}</p>
+            <p class="text-2xl font-medium">${{gdp_capita_data[0] | round_even_format}}</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_per_capita_rank[0]
                     }}</span>/{{gdp_ranks.gdp_per_capita_rank[1]}}
             </p>
-            <p class="mb-2">{{gdp_ranks.gdp_per_capita_rank[2]}}</p>
+            <p class="mb-1">{{gdp_ranks.gdp_per_capita_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{gdp_capita_data[1]}})</p>
             <canvas id="GDPPerCapitaChart"></canvas>
         </div>
         <!-- GDP Annual Growth -->
+        {% set gdp_growth_data = wb_data | most_recent_non_null_with_year('gdp_growth_annual_percent') %}
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">{{ wb_data | map(attribute='gdp_growth_annual_percent') | list | last |
-                round(2)
-                }}%</p>
+            <p class="text-2xl font-medium">{{ gdp_growth_data[0] | round(2) }}%</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_annual_growth_rank[0]
                     }}</span>/{{gdp_ranks.gdp_annual_growth_rank[1]}}
             </p>
-            <p class="mb-2">{{gdp_ranks.gdp_annual_growth_rank[2]}}</p>
+            <p class="mb-1">{{gdp_ranks.gdp_annual_growth_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{gdp_growth_data[1]}})</p>
             <canvas id="GDPAnnualGrowth"></canvas>
         </div>
 
@@ -89,25 +91,27 @@
 
     <hr class="mb-4" />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 place-items-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 place-items-center gap-4">
         <!-- GNI Current USD -->
+        {% set gni_current_data = wb_data | most_recent_non_null_with_year('gni_current_usd') %}
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gni_current_usd') | list | last |
-                round_even_format}}</p>
+            <p class="text-2xl font-medium">${{ gni_current_data[0] | round_even_format}}</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gni_ranks.gni_rank[0]
                     }}</span>/{{gni_ranks.gni_rank[1]}}
             </p>
-            <p class="mb-2">{{gni_ranks.gni_rank[2]}}</p>
+            <p class="mb-1">{{gni_ranks.gni_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{gni_current_data[1]}})</p>
             <canvas id="GNIChart"></canvas>
         </div>
         <!-- GNI Per Capita -->
+        {% set gni_capita_data = wb_data | most_recent_non_null_with_year('gni_per_capita_current_usd') %}
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">${{ wb_data | map(attribute='gni_per_capita_current_usd') | list | last
-                | round_even_format}}</p>
+            <p class="text-2xl font-medium">${{ gni_capita_data[0] | round_even_format}}</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gni_ranks.gni_per_capita_rank[0]
                     }}</span>/{{gni_ranks.gni_per_capita_rank[1]}}
             </p>
-            <p class="mb-2">{{gni_ranks.gni_per_capita_rank[2]}}</p>
+            <p class="mb-1">{{gni_ranks.gni_per_capita_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{gni_capita_data[1]}})</p>
             <canvas id="GNIPerCapita"></canvas>
         </div>
     </div>
@@ -120,7 +124,8 @@
         <h3 class="text-3xl text-red-500">Inflation</h3>
         <p class="max-w-prose text-center text-sm">Inflation is the rise in prices over time, decreasing the value
             of
-            money. It matters because it affects the cost of living and economic stability. All statistics from the
+            money. It matters because it affects the cost of living and economic stability. Lower values will yield a
+            higher rank. All statistics from the
             <a href="https://www.imf.org/en/Home" class="text-red-500">International Monetary Fund</a> & <a
                 class="text-red-500" href="https://www.worldbank.org/en/home">World Bank</a>.
         </p>
@@ -128,41 +133,43 @@
 
     <hr class="mb-4" />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4">
         <!-- Inflation, Average Consumer Prices over Period -->
+        {% set inflation_avg_data = imf_data | most_recent_non_null_with_year('inflation_avg_consumer_prices') %}
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_avg_consumer_prices') | list |
-                last |
+            <p class="text-2xl font-medium">{{ inflation_avg_data[0] |
                 round(1)
                 }}%</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ inflation_ranks.inflation_avg_rank[0]
                     }}</span>/{{inflation_ranks.inflation_avg_rank[1]}}
             </p>
-            <p class="mb-2">{{inflation_ranks.inflation_avg_rank[2]}}</p>
+            <p class="mb-1">{{inflation_ranks.inflation_avg_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{inflation_avg_data[1]}})</p>
             <canvas id="InflationAverage"></canvas>
         </div>
         <!-- Inflation, End of period prices-->
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">{{ imf_data | map(attribute='inflation_end_consumer_prices') | list |
-                last
-                | round(1)}}%</p>
+            {% set inflation_end_data = imf_data | most_recent_non_null_with_year('inflation_end_consumer_prices') %}
+            <p class="text-2xl font-medium">{{ inflation_end_data[0] | round(1)}}%</p>
             <p class="text-sm inline rounded-full"><span class="text-xl">#{{ inflation_ranks.inflation_end_rank[0]
                     }}</span>/{{inflation_ranks.inflation_end_rank[1]}}
             </p>
-            <p class="mb-2">{{inflation_ranks.inflation_end_rank[2]}}</p>
+            <p class="mb-1">{{inflation_ranks.inflation_end_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{inflation_end_data[1]}})</p>
             <canvas id="InflationEnd"></canvas>
         </div>
         <!-- Inflation, GDP Deflator -->
         <div class="w-96 flex flex-col justify-start items-center">
-            <p class="text-2xl font-medium">{{ wb_data | map(attribute='inflation_gdp_deflator_annual_percent') |
-                list |
-                last |
+            {% set inflation_def_data = wb_data |
+            most_recent_non_null_with_year('inflation_gdp_deflator_annual_percent') %}
+            <p class="text-2xl font-medium">{{ inflation_def_data[0] |
                 round(1)
                 }}%</p>
-            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ gdp_ranks.gdp_annual_growth_rank[0]
-                    }}</span>/{{gdp_ranks.gdp_annual_growth_rank[1]}}
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ inflation_ranks.inflation_deflator_rank[0]
+                    }}</span>/{{inflation_ranks.inflation_deflator_rank[1]}}
             </p>
-            <p class="mb-2">{{gdp_ranks.gdp_annual_growth_rank[2]}}</p>
+            <p class="mb-1">{{inflation_ranks.inflation_deflator_rank[2]}}</p>
+            <p class="text-slate-600 text-xs">({{inflation_def_data[1]}})</p>
             <canvas id="InflationGDPDeflator"></canvas>
         </div>
 
@@ -179,48 +186,24 @@
     <div class="flex flex-col gap-4 justify-start items-center mb-4">
         <p class="text-8xl text-violet-500"><i class="fa-solid fa-chart-pie"></i></p>
         <h3 class="text-3xl text-violet-500">Equality Metrics</h3>
-        <p class="max-w-prose text-center text-sm">Inflation is the rise in prices over time, decreasing the value
-            of
-            money. It matters because it affects the cost of living and economic stability. All statistics from the
-            <a class="text-violet-500" href="https://www.worldbank.org/en/home">World Bank</a>. We do not do rank these
-            metrics, as they are reported much less frequently, what is unfair for developing nations.
+        <p class="max-w-prose text-center text-sm">Equality metrics provide insight into the distribution of income
+            within a country, highlighting economic disparities between different groups of the population. All
+            statistics from the
+            <a class="text-violet-500" href="https://www.worldbank.org/en/home">World Bank</a>.
         </p>
     </div>
 
     <hr class="mb-4" />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
-
-        <!-- Gini Coefficient -->
-        <div class="flex flex-col justify-start items-center gap-2">
-            <p class="text-2xl font-medium">Gini Coefficient</p>
-            <p class="text-sm text-slate-500 text-center max-w-prose">The Gini coefficient measures income inequality on
-                a scale from
-                0% (perfect
-                equality) to 100% (maximum
-                inequality).</p>
-            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
-                data-percent="{{ gini_data[0] }}">
-                <!-- Background Circle -->
-                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
-
-
-                <div class="absolute inset-0 rounded-full border-violet-500 border-4 filled-circle"
-                    style="transform: scaleX(-1);">
-                </div>
-
-                <!-- Centered Value (%) -->
-                <span class="text-xl font-semibold z-10 text-slate-100"></span>
-            </div>
-            <p class="text-slate-600 text-xs">({{gini_data[1]}})</p>
-        </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4">
 
         <!-- Lowest 10% -->
-        <div class="flex flex-col justify-start items-center gap-2">
-            <p class="text-2xl font-medium">Income Share of Poorest 10%</p>
-            <p class="text-sm text-slate-500 text-center max-w-prose">Shows the percentage of total income earned by the
-                poorest 10% of a country’s population, indicating income distribution among the most economically
-                disadvantaged.</p>
+        <div class="flex flex-col justify-start items-center">
+            <p class="text-xl font-medium">Income Share of Poorest 10%</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ equality_ranks.lowest_ten_rank[0]
+                    }}</span>/{{equality_ranks.lowest_ten_rank[1]}}
+            </p>
+            <p class="mb-2">{{equality_ranks.lowest_ten_rank[2]}}</p>
             <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
                 data-percent="{{ lowest_data[0] }}">
                 <!-- Background Circle -->
@@ -234,16 +217,22 @@
                 <!-- Centered Value (%) -->
                 <span class="text-xl font-semibold z-10 text-slate-100"></span>
             </div>
-            <p class="text-slate-600 text-xs">({{lowest_data[1]}})</p>
+            <p class="text-slate-600 text-xs my-2">({{lowest_data[1]}})</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">Shows the share of total income earned by the
+                poorest 10% of a population, highlighting income distribution among the least wealthy.</p>
         </div>
 
-        <!-- Highest 10%-->
-        <div class="flex flex-col justify-start items-center gap-2">
-            <p class="text-2xl font-medium">Income Share of Wealthiest 10%</p>
-            <p class="text-sm text-slate-500 text-center max-w-prose">Shows the percentage of total income earned by the
-                richest 10% of a country’s population, reflecting income distribution among the wealthiest.</p>
-            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
-                data-percent="{{ highest_data[0] }}">
+        <!-- Gini Coefficient -->
+        <div class="flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">Gini Coefficient</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ equality_ranks.gini_rank[0]
+                    }}</span>/{{equality_ranks.gini_rank[1]}}
+            </p>
+            <p class="mb-2">{{equality_ranks.gini_rank[2]}}</p>
+
+            </p>
+            <div class="relative w-24 h-24 rounded-full flex items-center justify-center"
+                data-percent="{{ gini_data[0] }}">
                 <!-- Background Circle -->
                 <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
 
@@ -253,12 +242,142 @@
                 </div>
 
                 <!-- Centered Value (%) -->
+                <span class="text-2xl font-semibold z-10 text-slate-100"></span>
+            </div>
+            <p class="text-slate-600 text-xs my-2">({{gini_data[1]}})</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">The Gini coefficient measures income inequality on
+                a scale from
+                0% (perfect
+                equality) to 100% (maximum
+                inequality).</p>
+            <p>
+        </div>
+
+        <!-- Highest 10%-->
+        <div class="flex flex-col justify-start items-center">
+            <p class="text-xl font-medium">Income Share of Wealthiest 10%</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ equality_ranks.highest_ten_rank[0]
+                    }}</span>/{{equality_ranks.highest_ten_rank[1]}}
+            </p>
+            <p class="mb-2">{{equality_ranks.highest_ten_rank[2]}}</p>
+            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
+                data-percent="{{ highest_data[0] }}">
+                <!-- Background Circle -->
+                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
+
+                <div class="absolute inset-0 rounded-full border-violet-500 border-4 filled-circle"
+                    style="transform: scaleX(-1);">
+                </div>
+
+                <!-- Centered Value (%) -->
                 <span class="text-xl font-semibold z-10 text-slate-100"></span>
             </div>
-            <p class="text-slate-600 text-xs">({{highest_data[1]}})</p>
+            <p class="text-slate-600 text-xs my-2">({{highest_data[1]}})</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">Shows the percentage of total income earned by the
+                richest 10% of a country&apos;s population, reflecting income distribution among the wealthiest.</p>
         </div>
     </div>
 </div>
+
+<!-- Employment and Trade -->
+
+<div class="border p-8 shadow-xl rounded mt-4">
+
+    <div class="flex flex-col gap-4 justify-start items-center mb-4">
+        <p class="text-8xl text-amber-500"><i class="fa-solid fa-truck"></i></i></p>
+        <h3 class="text-3xl text-amber-500">Unemployment & International Trade</h3>
+        <p class="max-w-prose text-center text-sm">Unemployment reflects economic challenges and labor market
+            weaknesses. Exports and imports as a percentage of GDP provide insights into a country’s trade balance and
+            openness to global trade, impacting its economic growth and stability. All statistics from the
+            <a class="text-amber-500" href="https://www.worldbank.org/en/home">World Bank</a>.
+        </p>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
+
+        <!-- Exports % of GDP -->
+        {% set exports_percent = wb_data | most_recent_non_null_with_year('exports_gdp_percent') %}
+        <div class="flex flex-col justify-start items-center">
+            <p class="text-xl font-medium">Exports (% of GDP)</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ additional_ranks.exports_rank[0]
+                    }}</span>/{{additional_ranks.exports_rank[1]}}
+            </p>
+            <p class="mb-2">{{additional_ranks.exports_rank[2]}}</p>
+            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
+                data-percent-amber="{{ exports_percent[0] | round(1) if exports_percent and exports_percent[0] is not none else '' }}">
+                <!-- Background Circle -->
+                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
+
+
+                <div class="absolute inset-0 rounded-full border-amber-500 border-4 filled-circle"
+                    style="transform: scaleX(-1);">
+                </div>
+
+                <!-- Centered Value (%) -->
+                <span class="text-xl font-semibold z-10 text-slate-100"></span>
+            </div>
+            <p class="text-slate-600 text-xs my-2">({{exports_percent[1]}})</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">Measures the share of a country's GDP generated by
+                selling goods and services to other countries.</p>
+        </div>
+
+        <!-- Employment -->
+        {% set unemployment = wb_data | most_recent_non_null_with_year('unemployment') %}
+        <div class="flex flex-col justify-start items-center">
+            <p class="text-2xl font-medium">Unemployment (%)</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ additional_ranks.unemployment_rank[0]
+                    }}</span>/{{additional_ranks.unemployment_rank[1]}}
+            </p>
+            <p class="mb-2">{{additional_ranks.unemployment_rank[2]}}</p>
+            <div class="relative w-24 h-24 rounded-full flex items-center justify-center"
+                data-percent-amber="{{ unemployment[0] | round(1) if unemployment and unemployment[0] is not none else ''}}">
+                <!-- Background Circle -->
+                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
+
+
+                <div class="absolute inset-0 rounded-full border-amber-500 border-4 filled-circle"
+                    style="transform: scaleX(-1);">
+                </div>
+
+                <!-- Centered Value (%) -->
+                <span class="text-2xl font-semibold z-10 text-slate-100"></span>
+            </div>
+            <p class="text-slate-600 text-xs my-2">({{unemployment[1]}})</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">Percent of total labor force without employment.
+            </p>
+        </div>
+
+        <!-- Imports % of GDP-->
+        {% set imports_percent = wb_data | most_recent_non_null_with_year('imports_gdp_percent') %}
+        <div class="flex flex-col justify-start items-center">
+            <p class="text-xl font-medium">Imports (% of GDP)</p>
+            <p class="text-sm inline rounded-full"><span class="text-xl">#{{ additional_ranks.imports_rank[0]
+                    }}</span>/{{additional_ranks.imports_rank[1]}}
+            </p>
+            <p class="mb-2">{{additional_ranks.imports_rank[2]}}</p>
+            <div class="relative w-20 h-20 rounded-full flex items-center justify-center"
+                data-percent-amber="{{ imports_percent[0] | round(1) if imports_percent and imports_percent[0] is not none else ''}}">
+                <!-- Background Circle -->
+                <div class="absolute inset-0 rounded-full bg-transparent border-4"></div>
+
+
+                <div class="absolute inset-0 rounded-full border-amber-500 border-4 filled-circle"
+                    style="transform: scaleX(-1);">
+                </div>
+
+                <!-- Centered Value (%) -->
+                <span class="text-xl font-semibold z-10 text-slate-100"></span>
+            </div>
+            <p class="text-slate-600 text-xs">({{imports_percent[1]}})</p>
+            <p class="text-sm text-slate-500 text-center max-w-prose">Measures the share of a country&apos;s GDP spent
+                on
+                importing goods and services from abroad.</p>
+        </div>
+    </div>
+</div>
+
 
 <script>
 
@@ -269,35 +388,47 @@
         el.querySelector('span').innerText = `${percent}%`; // Update percentage text
     });
 
+    document.querySelectorAll('[data-percent-amber]').forEach(el => {
+        const percent = el.getAttribute('data-percent-amber'); // Read the data attribute
+        const filledCircle = el.querySelector('.filled-circle');
+        filledCircle.style.background = `conic-gradient(#b45309 0% ${percent}%, transparent ${percent}% 100%)`;
+        el.querySelector('span').innerText = `${percent}%`; // Update percentage text
+    });
+
     function createChart(chartId, labels, data, label, color) {
         const ctx = document.getElementById(chartId);
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    backgroundColor: color,
-                    label: label,
-                    data: data,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+        try {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        backgroundColor: color,
+                        label: label,
+                        data: data,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
+            });
+        } catch (e) {
+            console.log(e)
+        }
     }
+
 
     // GDP Charts
     createChart(
         'GDPChart',
         {{ wb_data | map(attribute = 'year') | list }},
-        {{ wb_data | map(attribute = 'gdp_current_usd') | list }},
+        {{ wb_data | map(attribute = 'gdp_current_usd') | list | tojson}},
         'Gross Domestic Product (USD)',
         '#22c55e'
     );
@@ -305,7 +436,7 @@
     createChart(
         'GDPPerCapitaChart',
         {{ wb_data | map(attribute = 'year') | list }},
-        {{ wb_data | map(attribute = 'gdp_per_capita_current_usd') | list }},
+        {{ wb_data | map(attribute = 'gdp_per_capita_current_usd') | list | tojson}},
         'GDP Per Capita (USD)',
         '#22c55e'
     );
@@ -313,7 +444,7 @@
     createChart(
         'GDPAnnualGrowth',
         {{ wb_data | map(attribute = 'year') | list }},
-        {{ wb_data | map(attribute = 'gdp_growth_annual_percent') | list }},
+        {{ wb_data | map(attribute = 'gdp_growth_annual_percent') | list | tojson}},
         'GDP Annual Growth (%)',
         '#22c55e'
     );
@@ -322,7 +453,7 @@
     createChart(
         'InflationAverage',
         {{ imf_data | map(attribute = 'year') | list }},
-        {{ imf_data | map(attribute = 'inflation_avg_consumer_prices') | list }},
+        {{ imf_data | map(attribute = 'inflation_avg_consumer_prices') | list | tojson}},
         'Inflation - Average Annual Increase in CPI (%)',
         '#ef4444'
     );
@@ -330,7 +461,7 @@
     createChart(
         'InflationEnd',
         {{ imf_data | map(attribute = 'year') | list }},
-        {{ imf_data | map(attribute = 'inflation_end_consumer_prices') | list }},
+        {{ imf_data | map(attribute = 'inflation_end_consumer_prices') | list | tojson}},
         'Inflation - End of Year Increase in CPI (%)',
         '#ef4444'
     );
@@ -338,7 +469,7 @@
     createChart(
         'InflationGDPDeflator',
         {{ wb_data | map(attribute = 'year') | list }},
-        {{ wb_data | map(attribute = 'inflation_gdp_deflator_annual_percent') | list }},
+        {{ wb_data | map(attribute = 'inflation_gdp_deflator_annual_percent') | list | tojson}},
         'Inflation - GDP Deflator (%)',
         '#ef4444'
     );
@@ -347,7 +478,7 @@
     createChart(
         'GNIChart',
         {{ wb_data | map(attribute = 'year') | list }},
-        {{ wb_data | map(attribute = 'gni_current_usd') | list }},
+        {{ wb_data | map(attribute = 'gni_current_usd') | list | tojson}},
         'Gross National Income (USD)',
         '#06b6d4'
     );
@@ -355,7 +486,7 @@
     createChart(
         'GNIPerCapita',
         {{ wb_data | map(attribute = 'year') | list }},
-        {{ wb_data | map(attribute = 'gni_per_capita_current_usd') | list }},
+        {{ wb_data | map(attribute = 'gni_per_capita_current_usd') | list | tojson}},
         'GNI Per Captia (USD)',
         '#06b6d4'
     );

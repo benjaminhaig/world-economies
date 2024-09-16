@@ -3,38 +3,40 @@
 {% block head %}
 <title>{{ country_name }}World Economies - Learn how your economy is really doing!</title>
 <meta name="description"
-    content="Economics is objective. Don't let politicians or your distant aunt tell you the economy is amazing or horrible."
-    {% endblock %} {% block body%} <h1 class="text-5xl md:text-8xl bg-slate-950 mb-8 text-center" id="typewriter">World
-Economies 🌎</h1>
+    content="Economics is objective. Don't let politicians or your distant aunt tell you the economy is amazing or horrible." />
+{% endblock %}
+
+{% block body%}
+<h1 class="text-5xl md:text-8xl bg-slate-950 mb-8 text-center" id="typewriter">World
+    Economies 🌎
+</h1>
 
 <div class="flex flex-row justify-center gap-2">
     <a href="#"
-        class="flex flex-col justify-center items-center text-base md:text-xl w-36 h-36 md:w-48 md:h-48 border rounded gap-2 bg-blue-500 transition-all duration-300"
-        id="over-rank-btn">
-        <span>Overall Rankings</span>
-        <i class="fa-solid fa-square-poll-vertical text-4xl"></i>
-    </a>
-    <a href="#"
-        class="flex flex-col justify-center items-center text-base md:text-xl w-36 h-36 md:w-48 md:h-48 border rounded gap-2 transition-all duration-300"
+        class="text-center flex flex-col justify-center items-center text-base md:text-lg w-36 h-36 md:w-48 md:h-48 border rounded gap-2 transition-all duration-300 bg-blue-500"
         id="gdp-rank-btn">
-        <span>Highest GDP</span>
+        <span>Highest GDP (USD)</span>
         <i class="fa-solid fa-city text-4xl"></i>
     </a>
     <a href="#"
-        class="flex flex-col justify-center items-center text-base md:text-xl w-36 h-36 md:w-48 md:h-48 border rounded gap-2 transition-all duration-300"
+        class="text-center flex flex-col justify-center items-center text-base md:text-lg w-36 h-36 md:w-48 md:h-48 border rounded gap-2 transition-all duration-300"
         id="inflation-rank-btn">
-        <span>Lowest Inflation</span>
+        <span>Lowest Inflation (%)</span>
         <i class="fa-solid fa-money-bill-trend-up text-4xl"></i>
+    </a>
+    <a href="#"
+        class="text-center flex flex-col justify-center items-center text-base md:text-lg w-36 h-36 md:w-48 md:h-48 border rounded gap-2 transition-all duration-300"
+        id="equality-rank-btn">
+        <span>Equality (Gini Coefficient)</span>
+        <i class="fa-solid fa-chart-pie text-4xl"></i>
     </a>
 </div>
 <hr class="my-4" />
 <div class="text-white text-xl">
-    <!-- Overall Ranking -->
-    <div id="overall-rank">
-        Overall Rank - COMING SOON!
-    </div>
+
     <!-- GDP Highest Ranking -->
-    <div id="gdp-rank" class="hidden flex flex-row gap-4 flex-wrap justify-center">
+
+    <div id="gdp-rank" class="flex flex-row gap-4 flex-wrap justify-center">
         {% for gdp in gdp_query if gdp.gdp_current_usd is not none %}
         <a href="/country/{{gdp.country_code}}"
             class="flex flex-col hover:scale-110 duration-300 transition-all hover:cursor-pointer group"
@@ -74,6 +76,26 @@ Economies 🌎</h1>
                     {{ country_codes.get(inflation.country_code, "Unknown Country") }}</p>
                 <p class="absolute bottom-4 left-1/2 text-sm transform -translate-x-1/2 p-2 bg-black rounded-full">
                     {{inflation.inflation_avg_consumer_prices}}%</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div id="equality-rank" class="hidden flex flex-row gap-4 flex-wrap justify-center">
+        {% for gini in gini_query if gini.gini_index is not none %}
+        <a href="/country/{{gini.country_code}}"
+            class="flex flex-col hover:scale-110 duration-300 transition-all hover:cursor-pointer group"
+            id="{{gini.country_code}}">
+            <div class="relative">
+                <p
+                    class="absolute top-4 left-4 text-xl w-12 h-12 bg-black rounded-full flex flex-row justify-center items-center">
+                    #{{ loop.index }}</p>
+                <img src="https://flagcdn.com/224x168/{{ gini.country_code | convert_alpha3_to_alpha2 | lower }}.png"
+                    alt="{{ gini.country_code }} flag" class="flag" />
+                <p
+                    class="text-sm text-center bg-black p-2 rounded-full absolute group-hover:block hidden absolute bottom-1/3 left-1/2 transform -translate-x-1/2">
+                    {{ country_codes.get(gini.country_code, "Unknown Country") }}</p>
+                <p class="absolute bottom-4 left-1/2 text-sm transform -translate-x-1/2 p-2 bg-black rounded-full">
+                    {{gini.gini_index}}%</p>
             </div>
         </a>
         {% endfor %}

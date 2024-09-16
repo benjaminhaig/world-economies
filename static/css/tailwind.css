@@ -8,7 +8,7 @@ h3,
 h4,
 h5,
 h6 {
-    @apply font-handjet;
+    @apply font-playfair
 }
 
 h1,
@@ -21,4 +21,8 @@ p,
 span,
 a {
     @apply text-slate-100
+}
+
+* {
+    @apply font-raleway
 }

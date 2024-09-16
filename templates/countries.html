@@ -7,5 +7,25 @@
 {% endblock %}
 
 {% block body %}
-<h1 id="typewriter">What Countries Do We Cover on World Economies?</h1>
+<h1 class="text-5xl font-bold mb-6 text-center" id="typewriter">What Countries Do We Cover on World
+    Economies?</h1>
+<p class="text-xl text-center mb-4">At this current time, we currently cover <span class="font-bold">{{ country_codes |
+        length }}</span>
+    countries. Below
+    are the countries
+    listed.</p>
+<div class="max-w-4xl mx-auto">
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <!-- Country Items -->
+        {% for code, country in country_codes.items() %}
+        <div class="bg-slate-800 p-4 rounded-lg shadow hover:bg-slate-700 transition duration-200">
+            <p class="text-center font-medium">{{ country }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <p>There may be some statistics missing for some other countries such as Gini or unemployment. We update our
+        statistics annually around April-May, once World Bank and IMF put out their new numbers for the previous year
+    </p>
+</div>
 {% endblock %}

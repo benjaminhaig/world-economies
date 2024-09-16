@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<title>Economic Indicators Explained - World Economies</title>
+<meta name="description" content="Learn what each of our economic indicators mean in very simple language" />
+{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto p-6 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold mb-6">Economic Indicators Explained</h1>
+
+    <!-- GDP Section -->
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Gross Domestic Product (GDP)</h2>
+        <h3 class="text-xl font-semibold mb-2">Current USD</h3>
+        <p class="mb-4">GDP in current USD measures the total market value of all goods and services produced in a
+            country using current prices.</p>
+
+        <h3 class="text-xl font-semibold mb-2">Per Capita USD</h3>
+        <p class="mb-4">GDP per capita divides the GDP by the total population, giving an average economic output per
+            person.</p>
+
+        <h3 class="text-xl font-semibold mb-2">Annual Growth</h3>
+        <p>GDP annual growth shows the percentage increase or decrease in economic output compared to the previous year.
+        </p>
+    </section>
+
+    <hr class="my-4" />
+
+    <!-- GNI Section -->
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Gross National Income (GNI)</h2>
+        <h3 class="text-xl font-semibold mb-2">Gross National Income (USD)</h3>
+        <p class="mb-4">GNI represents the total income earned by a country's residents, including net income from
+            abroad.</p>
+
+        <h3 class="text-xl font-semibold mb-2">GNI Per Capita</h3>
+        <p>GNI per capita provides an average income per person, useful for comparing living standards across countries.
+        </p>
+    </section>
+
+    <hr class="my-4" />
+
+    <!-- Inflation Section -->
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Inflation</h2>
+        <h3 class="text-xl font-semibold mb-2">Average Annual Increase in CPI</h3>
+        <p class="mb-4">This metric shows the average yearly increase in the Consumer Price Index (CPI), reflecting
+            changes in the cost of living.</p>
+
+        <h3 class="text-xl font-semibold mb-2">End of Year Increase in CPI</h3>
+        <p class="mb-4">It measures the increase in CPI from the end of the previous year to the end of the current
+            year, indicating inflation trends.</p>
+
+        <h3 class="text-xl font-semibold mb-2">Inflation GDP Deflator</h3>
+        <p>The GDP deflator measures inflation by comparing the current GDP to a base year's GDP, accounting for price
+            changes.</p>
+    </section>
+
+    <hr class="my-4" />
+
+    <!-- Equality Section -->
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Equality</h2>
+        <h3 class="text-xl font-semibold mb-2">Gini Coefficient</h3>
+        <p class="mb-4">The Gini coefficient measures income inequality within a country, where 0 represents perfect
+            equality and 1 represents maximum inequality.</p>
+
+        <h3 class="text-xl font-semibold mb-2">Income Share of Poorest 10%</h3>
+        <p class="mb-4">This metric shows the percentage of total income earned by the poorest 10% of the population,
+            indicating economic inclusivity.</p>
+
+        <h3 class="text-xl font-semibold mb-2">Income Share of Wealthiest 10%</h3>
+        <p>It shows the share of income owned by the wealthiest 10%, providing insights into wealth distribution.</p>
+    </section>
+
+    <hr class="my-4" />
+
+    <!-- Employment & International Trade Section -->
+    <section>
+        <h2 class="text-2xl font-semibold mb-4">Employment & International Trade</h2>
+        <h3 class="text-xl font-semibold mb-2">Unemployment</h3>
+        <p class="mb-4">Unemployment measures the percentage of the labor force that is without a job but actively
+            seeking employment.</p>
+
+        <h3 class="text-xl font-semibold mb-2">Exports (% of GDP)</h3>
+        <p class="mb-4">This metric shows the value of goods and services a country exports relative to its GDP,
+            indicating economic openness.</p>
+
+        <h3 class="text-xl font-semibold mb-2">Imports (% of GDP)</h3>
+        <p>Imports as a percentage of GDP indicate the extent to which a country relies on foreign goods and services
+            compared to its own production.</p>
+    </section>
+</div>
+{% endblock %}
