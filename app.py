@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 import database
 from config import COUNTRY_CODES, TESTING_COUNTRY_CODES, GLOBAL_TESTING, CURRENT_YEAR
 import database.models
@@ -6,10 +6,12 @@ from database.all_rankings import all_rankings
 import pycountry
 from sqlalchemy import func
 from database import db
+from flask_sitemap import Sitemap
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 database.db.init_app(app)
+ext = Sitemap(app=app)
 
 print("*** Testing Dataset: ", GLOBAL_TESTING, " ***")
 
@@ -85,6 +87,10 @@ def country(country_code):
 def indicators():
     return render_template('metrics.html')
 
+@app.route('/robots.txt')
+def robots_txt():
+    return send_from_directory(app.static_folder, 'robots.txt')
+
 @app.route('/countries')
 @check_maintenance_mode
 def countries():
@@ -115,13 +121,32 @@ def most_recent_non_null_with_year(data, attribute):
 @app.template_filter('none_to_null')
 def none_to_null(value):
     if value is None:
-        return 'null'  # Return JavaScript-compatible null
+        return 'null' 
     return value
 
 # Context Shit
 @app.context_processor
 def inject_country_codes():
     return dict(country_codes=COUNTRY_CODES, version="Beta 0.0.2")
+
+# sitemap nonsense
+
+@ext.register_generator
+def index():
+    yield 'index', {} 
+
+@ext.register_generator
+def countries():
+    yield 'countries', {}
+
+@ext.register_generator
+def indicators():
+    yield 'indicators', {}
+
+@ext.register_generator
+def country_routes():
+    for key, value in COUNTRY_CODES.items():  # Example for dynamic routes
+        yield 'country', {'country_code': key}
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

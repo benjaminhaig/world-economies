@@ -295,7 +295,7 @@
 
     <hr class="mb-4" />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-4">
 
         <!-- Exports % of GDP -->
         {% set exports_percent = wb_data | most_recent_non_null_with_year('exports_gdp_percent') %}
