@@ -9,25 +9,31 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js">
 </script>
 
-<div class="flex flex-row justify-start gap-4">
-    <h1 class="text-6xl md:text-8xl" id="typewriter">{{ country_name }}</h1>
+<div class="flex flex-row justify-center md:justify-start gap-4 flex-wrap md:flex-nowrap mb-4">
+    <h1 class="text-5xl md:text-7xl text-center md:text-start" id="typewriter">{{ country_name }}</h1>
+    <!-- Desktop Flag -->
     <img src="https://flagcdn.com/96x72/{{ country_code | convert_alpha3_to_alpha2 | lower }}.png"
-        alt="{{ country_name }} flag" class="flag" />
+        alt="{{ country_name }} flag" class="flag hidden md:block" />
+
+    <!-- Mobile Flag -->
+    <img src="https://flagcdn.com/36x27/{{ country_code | convert_alpha3_to_alpha2 | lower }}.png"
+        alt="{{ country_name }} flag" class="flag block md:hidden" />
 </div>
-<a class="my-2 hover:text-blue-500 transition-all duration-300"
+<a class="hover:text-blue-500 transition-all duration-300 text-center md:text-start block"
     href="https://www.google.com/maps?q={{ wb_data | map(attribute='latitude') | list | last }},{{ wb_data | map(attribute='longitude') | list | last }}"
     target="_blank">
     📍{{ wb_data | map(attribute='capital_city') | list | last }} ({{ wb_data | map(attribute='latitude') | list
     | last
     }}, {{ wb_data | map(attribute='longitude') | list | last }})
 </a>
-<p>🧑‍🤝‍🧑 {{imf_data | map(attribute='population_total') | list | last | round_even_format}}</p>
+<p class="text-center md:text-start">🧑‍🤝‍🧑 {{imf_data | map(attribute='population_total') | list | last |
+    round_even_format}}</p>
 
 <!-- GDP Metrics -->
 <div class="border p-8 shadow-xl rounded mt-4">
     <div class="flex flex-col gap-4 justify-start items-center mb-4">
         <p class="text-8xl text-green-500"><i class="fa-solid fa-city"></i></p>
-        <h3 class="text-3xl text-green-500">Gross Domestic Product (GDP)</h3>
+        <h3 class="text-3xl text-green-500 text-center">Gross Domestic Product (GDP)</h3>
         <p class="max-w-prose text-center text-sm">GDP is the total value of goods and services produced
             in a country
             over a specific period. It reflects economic health, guiding policy and investment decisions. All GDP
@@ -80,7 +86,7 @@
 <div class="border p-8 shadow-xl rounded mt-4">
     <div class="flex flex-col gap-4 justify-start items-center mb-4">
         <p class="text-8xl text-cyan-500"><i class="fa-solid fa-sack-dollar"></i></p>
-        <h3 class="text-3xl text-cyan-500">Gross National Income (GNI)</h3>
+        <h3 class="text-3xl text-cyan-500 text-center">Gross National Income (GNI)</h3>
         <p class="max-w-prose text-center text-sm">GNI is the total income earned by a
             country&apos;s
             residents, including income from abroad. It is important because it provides a broader view of a
@@ -121,7 +127,7 @@
 <div class="border p-8 shadow-xl rounded mt-4">
     <div class="flex flex-col gap-4 justify-start items-center mb-4">
         <p class="text-8xl text-red-500"><i class="fa-solid fa-money-bill-trend-up"></i></p>
-        <h3 class="text-3xl text-red-500">Inflation</h3>
+        <h3 class="text-3xl text-red-500 text-center">Inflation</h3>
         <p class="max-w-prose text-center text-sm">Inflation is the rise in prices over time, decreasing the value
             of
             money. It matters because it affects the cost of living and economic stability. Lower values will yield a
@@ -185,7 +191,7 @@
 
     <div class="flex flex-col gap-4 justify-start items-center mb-4">
         <p class="text-8xl text-violet-500"><i class="fa-solid fa-chart-pie"></i></p>
-        <h3 class="text-3xl text-violet-500">Equality Metrics</h3>
+        <h3 class="text-3xl text-violet-500 text-center">Equality Metrics</h3>
         <p class="max-w-prose text-center text-sm">Equality metrics provide insight into the distribution of income
             within a country, highlighting economic disparities between different groups of the population. All
             statistics from the
@@ -285,7 +291,7 @@
 
     <div class="flex flex-col gap-4 justify-start items-center mb-4">
         <p class="text-8xl text-amber-500"><i class="fa-solid fa-truck"></i></i></p>
-        <h3 class="text-3xl text-amber-500">Unemployment & International Trade</h3>
+        <h3 class="text-3xl text-amber-500 text-center">Unemployment & International Trade</h3>
         <p class="max-w-prose text-center text-sm">Unemployment reflects economic challenges and labor market
             weaknesses. Exports and imports as a percentage of GDP provide insights into a country’s trade balance and
             openness to global trade, impacting its economic growth and stability. All statistics from the
@@ -346,6 +352,7 @@
             </div>
             <p class="text-slate-600 text-xs my-2">({{unemployment[1]}})</p>
             <p class="text-sm text-slate-500 text-center max-w-prose">Percent of total labor force without employment.
+                Lower percent will rank higher.
             </p>
         </div>
 

@@ -127,7 +127,7 @@ def none_to_null(value):
 # Context Shit
 @app.context_processor
 def inject_country_codes():
-    return dict(country_codes=COUNTRY_CODES, version="Beta 0.0.2")
+    return dict(country_codes=COUNTRY_CODES, version="Beta 0.0.3")
 
 # sitemap nonsense
 

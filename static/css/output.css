@@ -900,10 +900,6 @@ video {
   text-align: center;
 }
 
-.font-pixelify {
-  font-family: Pixelify Sans, sans-serif;
-}
-
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1157,6 +1153,14 @@ a {
 }
 
 @media (min-width: 768px) {
+  .md\:block {
+    display: block;
+  }
+
+  .md\:hidden {
+    display: none;
+  }
+
   .md\:h-48 {
     height: 12rem;
   }
@@ -1177,6 +1181,14 @@ a {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .md\:flex-nowrap {
+    flex-wrap: nowrap;
+  }
+
+  .md\:justify-start {
+    justify-content: flex-start;
+  }
+
   .md\:text-start {
     text-align: start;
   }
@@ -1189,6 +1201,11 @@ a {
   .md\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
+  }
+
+  .md\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
   }
 }
 
